@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+
+	<style type="text/css">
+	.container{
+		position: relative;
+	}
+	.Areas{
+		position: relative;
+		float: left;;
+		width: 500px;
+	}
+	textarea{
+		width: 100%;
+	}
+	.helps{
+		width: 50px;
+		float: left;
+		padding: 15px;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="Areas">
+			<textarea id="txtExpLive" placeholder="Ingrese la expresion regular"></textarea><br>
+			<textarea id="txtMaskLive" placeholder="Ingrese la maskara"></textarea><br>
+			<textarea id="txtTextLive" placeholder="ingrese el texto"></textarea><br>
+			<label id="lblMsgLive"></label>
+		</div>
+
+		<div class="helps">
+			<input type="button" id="btnHelpEmail" value="Email">
+			<input type="button" id="btnHelpHour" value="Hour">
+			<input type="button" id="btnHelpDate" value="Date">
+			<input type="button" id="btnHelpNumber" value="Number">
+			<input type="button" id="btnHelpText" value="Text">
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+	var txtExpLive = document.getElementById("txtExpLive");
+	var txtMaskLive = document.getElementById("txtMaskLive");
+	var txtTextLive = document.getElementById("txtTextLive");
+	var lblMsgLive = document.getElementById("lblMsgLive");
+
+
+	var btnHelpEmail = document.getElementById("btnHelpEmail");
+	var btnHelpHour = document.getElementById("btnHelpHour");
+	var btnHelpDate = document.getElementById("btnHelpDate");
+	var btnHelpNumber = document.getElementById("btnHelpNumber");
+	var btnHelpText = document.getElementById("btnHelpText");
+
+	txtExpLive.onkeyup=function(evt){
+		lblMsgLive.innerHTML = ExpLiveValidate(txtTextLive.value, txtExpLive.value);
+	};
+
+	txtTextLive.onkeypress = function (evt) {
+		//console.log("onkeypress");
+		//"[0-9:]"
+		
+		var value = CheckValidKey(evt,txtMaskLive.value);
+		return value;
+		if(!value)
+			return false;
+	}
+
+	txtTextLive.onkeyup=function(){
+		lblMsgLive.innerHTML = ExpLiveValidate(txtTextLive.value, txtExpLive.value);
+	};
+
+	function CheckValidKey(keyEvent, reg){
+		//keyEvent.preventDefault();
+
+		//console.log(keyEvent);
+		var key = String.fromCharCode(!keyEvent.charCode ? keyEvent.which : keyEvent.charCode);
+
+		
+		if (keyEvent.keyCode == 8 || keyEvent.keyCode == 46 || keyEvent.keyCode == 13 || keyEvent.keyCode == 37 || keyEvent.keyCode == 39 || keyEvent.keyCode == 36 || keyEvent.keyCode == 35)
+			return true;
+		
+
+		var regex = new RegExp(reg);
+		var vExec = regex.exec(key);
+		if(vExec != null){
+			return true;
+		}
+		return false;
+	}
+
+	function ExpLiveValidate(text, reg){
+		var regex = new RegExp(reg);
+		var vExec = regex.exec(text);
+		var vTest = regex.test(text);
+
+		if(vExec != null)
+		{
+			return "Ok - this part is valid: " + vExec[0];
+		}
+		return "Error"
+	}
+
+
+	function ShowHelp (reg,mask,value) {
+		
+		txtExpLive.value = reg;
+		txtMaskLive.value = mask;
+		txtTextLive.value = value;
+
+		lblMsgLive.innerHTML = ExpLiveValidate(txtTextLive.value, txtExpLive.value);
+	}
+	btnHelpEmail.onclick = function(){	ShowHelp('^([_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*){3,}@([A-Za-z0-9-]+(\.[A-Za-z0-9]+)*){3,}(\.[A-Za-z]{2,})$','[_A-Za-z0-9-.@]','email@domain.com');	}
+	btnHelpHour.onclick = function(){	ShowHelp('^([01]?[0-9]|2[0-3]):(0[0-9]|[0-5][0-9])$','[0-9:]','22:50');	}
+	btnHelpDate.onclick = function(){	ShowHelp('^(0[1-9]|1[0-9]|2[0-9]|3[0-1])/(0[1-9]|1[0-2])/([0-9]{4})$','[0-9/]','20/06/2010');	}
+	btnHelpNumber.onclick = function(){	ShowHelp('^[0-9]+$','[0-9]','1234');	}
+	btnHelpText.onclick = function(){	ShowHelp("^[A-Za-záéíóúñÁÉÍÓÚÑäëïöüÄËÏÜÖçÇ' ]+$","[A-Za-záéíóúñÁÉÍÓÚÑäëïöüÄËÏÜÖçÇ' ]","Hello it's nice");	}
+
+
+	$(function() {
+		
+	});
+	</script>
+</body>
+</html>
